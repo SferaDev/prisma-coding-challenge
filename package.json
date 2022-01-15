@@ -5,7 +5,7 @@
     "license": "",
     "scripts": {
         "build": "remix build",
-        "dev": "remix dev",
+        "dev": "concurrently \"remix dev\" \"tsc --watch\"",
         "postinstall": "remix setup node && prisma generate",
         "start": "remix-serve build",
         "prettify": "prettier --write '**/*.{js,ts,tsx,json,md,yml}'",
@@ -43,6 +43,7 @@
         "@types/swagger-ui": "3.52.0",
         "@typescript-eslint/eslint-plugin": "5.9.1",
         "@typescript-eslint/parser": "5.9.1",
+        "concurrently": "7.0.0",
         "dotenv": "12.0.3",
         "dotenv-cli": "4.1.1",
         "esbuild-jest": "0.5.0",
