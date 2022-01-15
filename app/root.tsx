@@ -11,6 +11,7 @@ import {
     ScrollRestoration,
     useLoaderData,
 } from "remix";
+import { GitHubLogin } from "./components/github-login/GitHubLogin";
 import { authenticator } from "./services/auth.server";
 import styles from "./tailwind.css";
 
@@ -50,11 +51,7 @@ const App: React.FC = () => {
     const data = useLoaderData();
 
     if (!data.isLoggedIn) {
-        return (
-            <Form action="/auth/github" method="post">
-                <button>Login with GitHub</button>
-            </Form>
-        );
+        return <GitHubLogin />;
     }
 
     return <Outlet />;
