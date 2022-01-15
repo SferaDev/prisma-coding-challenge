@@ -38,13 +38,13 @@ export default function Root() {
 
 export const loader: LoaderFunction = async ({ request }) => {
     const user = await authenticator.isAuthenticated(request);
-    return { user };
+    return { isLoggedIn: !!user };
 };
 
 const App: React.FC = () => {
     const data = useLoaderData();
 
-    if (!data.user) {
+    if (!data.isLoggedIn) {
         return (
             <Form action="/auth/github" method="post">
                 <button>Login with GitHub</button>
