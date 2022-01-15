@@ -20,4 +20,9 @@ export class UserActions {
 
         return db.user.create({ data: { name, email } });
     }
+
+    public static async validateToken(apiToken: string) {
+        const user = await db.user.findFirst({ where: { apiToken } });
+        return !!user;
+    }
 }

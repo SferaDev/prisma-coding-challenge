@@ -7,13 +7,14 @@ const spec: SwaggerSpec = {
         version: "0.0.1",
         title: "Prisma Coding Challenge API",
     },
-    host: process.env.BASE_URL,
+    host: process.env.BASE_URL?.split("//")[1],
     basePath: "/api",
     tags: [{ name: "blogs" }, { name: "posts" }],
     schemes: ["http", "https"],
     paths: {
         "/blogs": {
             get: {
+                security: [{ headerKey: [] }, { queryKey: [] }],
                 tags: ["blogs"],
                 summary: "Get all blogs",
                 parameters: [
@@ -34,6 +35,7 @@ const spec: SwaggerSpec = {
                 },
             },
             post: {
+                security: [{ headerKey: [] }, { queryKey: [] }],
                 tags: ["blogs"],
                 summary: "Create new blogs",
                 description: "",
@@ -61,6 +63,7 @@ const spec: SwaggerSpec = {
         },
         "/blogs/{blog}": {
             get: {
+                security: [{ headerKey: [] }, { queryKey: [] }],
                 tags: ["blogs"],
                 summary: "Get blog by slug",
                 parameters: [
@@ -79,6 +82,7 @@ const spec: SwaggerSpec = {
                 },
             },
             delete: {
+                security: [{ headerKey: [] }, { queryKey: [] }],
                 tags: ["blogs"],
                 summary: "Delete blog",
                 parameters: [
@@ -99,6 +103,7 @@ const spec: SwaggerSpec = {
         },
         "/blogs/{blog}/posts": {
             get: {
+                security: [{ headerKey: [] }, { queryKey: [] }],
                 tags: ["posts"],
                 summary: "Get all blog posts",
                 responses: {
@@ -108,6 +113,7 @@ const spec: SwaggerSpec = {
                 },
             },
             post: {
+                security: [{ headerKey: [] }, { queryKey: [] }],
                 tags: ["posts"],
                 summary: "Create posts in a blog",
                 parameters: [
@@ -139,6 +145,7 @@ const spec: SwaggerSpec = {
         },
         "/blogs/{blog}/posts/{post}": {
             get: {
+                security: [{ headerKey: [] }, { queryKey: [] }],
                 tags: ["posts"],
                 summary: "Get post by slug",
                 parameters: [
@@ -164,6 +171,7 @@ const spec: SwaggerSpec = {
                 },
             },
             delete: {
+                security: [{ headerKey: [] }, { queryKey: [] }],
                 tags: ["posts"],
                 summary: "Delete post",
                 parameters: [
@@ -191,10 +199,15 @@ const spec: SwaggerSpec = {
         },
     },
     securityDefinitions: {
-        api_key: {
+        headerKey: {
             type: "apiKey",
-            name: "api_key",
+            name: "x-api-key",
             in: "header",
+        },
+        queryKey: {
+            type: "apiKey",
+            name: "token",
+            in: "query",
         },
     },
     definitions: {

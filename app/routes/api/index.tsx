@@ -22,7 +22,7 @@ export default function Index() {
             domNode: swaggerRef.current,
             url: "/api/swagger.json",
             onComplete: () => {
-                if (data.apiKey) ui.preauthorizeApiKey("api_key", data.apiKey);
+                if (data.apiKey) ui.preauthorizeApiKey("headerKey", data.apiKey);
             },
         });
     }, []);
