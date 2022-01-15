@@ -12,6 +12,7 @@ import {
     useLoaderData,
 } from "remix";
 import { authenticator } from "./services/auth.server";
+import styles from "./tailwind.css";
 
 export const meta: MetaFunction = () => {
     return { title: "Prisma coding challenge" };
@@ -34,6 +35,10 @@ export default function Root() {
             </body>
         </html>
     );
+}
+
+export function links() {
+    return [{ rel: "stylesheet", href: styles }];
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
