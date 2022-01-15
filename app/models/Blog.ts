@@ -1,6 +1,6 @@
-import invariant from "tiny-invariant";
 import { z } from "zod";
 import { uniq } from "~/utils/arrays";
+import { validate } from "~/utils/errors.server";
 import { promiseMap } from "~/utils/promises";
 import { Unknown } from "~/utils/types";
 import { db } from "../utils/db.server";
@@ -16,7 +16,10 @@ export type Blog = z.infer<typeof BlogModel>;
 
 export class BlogActions {
     public static async get(slug: string, options: { includePosts: boolean }) {
-        return db.blog.findUnique({ where: { slug }, include: { posts: options.includePosts } });
+        const blog = await db.blog.findUnique({ where: { slug }, include: { posts: options.includePosts } });
+        validate(blog !== null, "Blog does not exist", 404);
+
+        return blog;
     }
 
     public static async list(options: { includePosts: boolean }) {
@@ -27,8 +30,8 @@ export class BlogActions {
         const blogs = BlogModel.array().nonempty().parse(raw);
 
         return promiseMap(blogs, async ({ name, slug: blogSlug, posts = [] }) => {
-            invariant((await db.blog.findUnique({ where: { slug: blogSlug } })) === null, "Blog already exists");
-            invariant(uniq(posts.map(({ slug }) => slug)).length === posts.length, "Duplicate post slugs");
+            validate((await db.blog.findUnique({ where: { slug: blogSlug } })) === null, "Blog already exists", 409);
+            validate(uniq(posts.map(({ slug }) => slug)).length === posts.length, "Duplicate post slugs", 409);
 
             await db.blog.create({ data: { name, slug: blogSlug } });
 
@@ -41,7 +44,7 @@ export class BlogActions {
     }
 
     public static async delete(slug: string) {
-        invariant((await db.blog.findUnique({ where: { slug } })) !== null, "Blog does not exist");
+        validate((await db.blog.findUnique({ where: { slug } })) !== null, "Blog does not exist", 404);
 
         await db.post.deleteMany({ where: { blogSlug: slug } });
         await db.blog.delete({ where: { slug } });

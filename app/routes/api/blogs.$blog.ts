@@ -1,12 +1,12 @@
 import { ActionFunction, json, LoaderFunction } from "remix";
-import invariant from "tiny-invariant";
 import { BlogActions } from "~/models/Blog";
 import { isValidApiKey } from "~/services/guard.server";
+import { validate } from "~/utils/errors.server";
 import { getQueryParam } from "~/utils/url.server";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
-    invariant(await isValidApiKey(request), "Invalid API token");
-    invariant(params.blog, "Please provide a blog slug");
+    validate(await isValidApiKey(request), "Invalid API token", 401);
+    validate(params.blog, "Please provide a blog slug", 400);
 
     const includePostsParam = getQueryParam(request, "includePosts") ?? "false";
     const includePosts = includePostsParam !== "false";
@@ -16,7 +16,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 };
 
 export const action: ActionFunction = async ({ params, request }) => {
-    invariant(params.blog, "Please provide a blog slug");
+    validate(params.blog, "Please provide a blog slug", 400);
 
     switch (request.method) {
         case "DELETE": {

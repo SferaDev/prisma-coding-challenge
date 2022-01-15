@@ -1,11 +1,11 @@
 import { ActionFunction, json, LoaderFunction } from "remix";
-import invariant from "tiny-invariant";
 import { BlogActions } from "~/models/Blog";
 import { isValidApiKey } from "~/services/guard.server";
+import { validate } from "~/utils/errors.server";
 import { getQueryParam } from "~/utils/url.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-    invariant(await isValidApiKey(request), "Invalid API token");
+    validate(await isValidApiKey(request), "Invalid API token", 401);
 
     const includePostsParam = getQueryParam(request, "includePosts") ?? "false";
     const includePosts = includePostsParam !== "false";

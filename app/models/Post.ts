@@ -1,6 +1,6 @@
-import invariant from "tiny-invariant";
 import { z } from "zod";
 import { uniq } from "~/utils/arrays";
+import { validate } from "~/utils/errors.server";
 import { promiseMap } from "~/utils/promises";
 import { Unknown } from "~/utils/types";
 import { db } from "../utils/db.server";
@@ -15,7 +15,10 @@ export type Post = z.infer<typeof PostModel>;
 
 export class PostActions {
     public static async get(blogSlug: string, slug: string) {
-        return db.post.findUnique({ where: { blogSlug_slug: { blogSlug, slug } } });
+        const post = await db.post.findUnique({ where: { blogSlug_slug: { blogSlug, slug } } });
+        validate(post !== null, "Post does not exist", 404);
+
+        return post;
     }
 
     public static async list(blogSlug: string) {
@@ -25,14 +28,15 @@ export class PostActions {
     public static async create(blogSlug: string, body: Unknown<Post[]>) {
         const posts = PostModel.array().nonempty().parse(body);
 
-        invariant(uniq(posts.map(({ slug }) => slug)).length === posts.length, "Duplicate post slugs");
-        invariant(
+        validate(uniq(posts.map(({ slug }) => slug)).length === posts.length, "Duplicate post slugs", 409);
+        validate(
             (
                 await promiseMap(posts, async ({ slug }) =>
                     db.post.findUnique({ where: { blogSlug_slug: { blogSlug, slug } } })
                 )
             ).every(post => post === null),
-            "One of the posts already exists"
+            "One of the posts already exists",
+            409
         );
 
         await promiseMap(posts, async ({ title, slug: postSlug, content }) =>
@@ -43,9 +47,10 @@ export class PostActions {
     }
 
     public static async delete(blogSlug: string, slug: string) {
-        invariant(
+        validate(
             (await db.post.findUnique({ where: { blogSlug_slug: { blogSlug, slug } } })) !== null,
-            "Post does not exist"
+            "Post does not exist",
+            404
         );
 
         await db.post.delete({ where: { blogSlug_slug: { blogSlug, slug } } });
