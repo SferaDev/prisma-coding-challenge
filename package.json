@@ -18,7 +18,8 @@
         "docker:test:up": "docker-compose --env-file=.env.test up -d",
         "docker:test:down": "docker-compose --env-file=.env.test down",
         "db:seed": "node --require esbuild-register prisma/seed.ts",
-        "db:clear": "prisma migrate reset"
+        "db:clear": "prisma migrate reset",
+        "db:push": "prisma db push"
     },
     "prisma": {
         "seed": "yarn db:seed"
