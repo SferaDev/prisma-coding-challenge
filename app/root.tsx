@@ -1,5 +1,17 @@
 import React from "react";
-import { Links, LiveReload, Meta, MetaFunction, Outlet, Scripts, ScrollRestoration } from "remix";
+import {
+    Form,
+    Links,
+    LiveReload,
+    LoaderFunction,
+    Meta,
+    MetaFunction,
+    Outlet,
+    Scripts,
+    ScrollRestoration,
+    useLoaderData,
+} from "remix";
+import { authenticator } from "./services/auth.server";
 
 export const meta: MetaFunction = () => {
     return { title: "Prisma coding challenge" };
@@ -24,6 +36,21 @@ export default function Root() {
     );
 }
 
+export const loader: LoaderFunction = async ({ request }) => {
+    const user = await authenticator.isAuthenticated(request);
+    return { user };
+};
+
 const App: React.FC = () => {
+    const data = useLoaderData();
+
+    if (!data.user) {
+        return (
+            <Form action="/auth/github" method="post">
+                <button>Login with GitHub</button>
+            </Form>
+        );
+    }
+
     return <Outlet />;
 };

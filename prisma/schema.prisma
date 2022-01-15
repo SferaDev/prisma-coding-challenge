@@ -9,6 +9,13 @@ generator client {
   previewFeatures = ["referentialIntegrity"]
 }
 
+model User {
+  id       String @id @default(cuid())
+  name     String
+  email    String @unique
+  apiToken String @default(uuid())
+}
+
 model Blog {
   name      String
   slug      String   @unique
