@@ -3,7 +3,7 @@ import { authenticator } from "~/services/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
     const user = await authenticator.isAuthenticated(request);
-    if (!user) return redirect("/login");
+    if (!user) return redirect("/auth/login");
 
     return {};
 };
