@@ -14,7 +14,7 @@ const gitHubStrategy = new GitHubStrategy<User>(
     {
         clientID,
         clientSecret,
-        callbackURL: `${process.env.BASE_URL}/auth/github/callback`,
+        callbackURL: `/auth/github/callback`,
     },
     async ({ profile, accessToken }) => {
         // Pre-activate users by their organization membership

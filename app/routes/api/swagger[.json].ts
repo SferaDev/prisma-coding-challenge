@@ -10,7 +10,7 @@ const spec: SwaggerSpec = {
     host: process.env.BASE_URL?.split("//")[1],
     basePath: "/api",
     tags: [{ name: "blogs" }, { name: "posts" }],
-    schemes: ["http", "https"],
+    schemes: [process.env.NODE_ENV === "development" ? "http" : "https"],
     paths: {
         "/blogs": {
             get: {
