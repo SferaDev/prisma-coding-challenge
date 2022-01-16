@@ -2,6 +2,7 @@ import { Authenticator } from "remix-auth";
 import { GitHubStrategy } from "remix-auth-github";
 import { User, UserActions } from "~/models/User";
 import { sessionStorage } from "~/services/session.server";
+import { crossUserOrganizations } from "./octokit.server";
 
 export const authenticator = new Authenticator<User>(sessionStorage);
 
@@ -15,7 +16,24 @@ const gitHubStrategy = new GitHubStrategy<User>(
         clientSecret,
         callbackURL: `${process.env.BASE_URL}/auth/github/callback`,
     },
-    async ({ profile }) => UserActions.getOrCreate({ name: profile.displayName, email: profile.emails[0].value })
+    async ({ profile, accessToken }) => {
+        // Pre-activate users by their organization membership
+        const preactivate = await crossUserOrganizations(accessToken, [
+            "remix-run",
+            "prisma",
+            "EyeSeeTea",
+            "github",
+            "primer",
+        ]);
+
+        const user = await UserActions.getOrCreate({
+            name: profile.displayName,
+            email: profile.emails[0].value,
+            active: preactivate,
+        });
+
+        return user;
+    }
 );
 
 authenticator.use(gitHubStrategy);

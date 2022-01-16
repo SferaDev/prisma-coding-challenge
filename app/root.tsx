@@ -1,18 +1,5 @@
 import React from "react";
-import {
-    Form,
-    Links,
-    LiveReload,
-    LoaderFunction,
-    Meta,
-    MetaFunction,
-    Outlet,
-    Scripts,
-    ScrollRestoration,
-    useLoaderData,
-} from "remix";
-import { GitHubLogin } from "./components/github-login/GitHubLogin";
-import { authenticator } from "./services/auth.server";
+import { Links, LiveReload, Meta, MetaFunction, Outlet, Scripts, ScrollRestoration } from "remix";
 import styles from "./tailwind.css";
 
 export const meta: MetaFunction = () => {
@@ -42,17 +29,6 @@ export function links() {
     return [{ rel: "stylesheet", href: styles }];
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
-    const user = await authenticator.isAuthenticated(request);
-    return { isLoggedIn: !!user };
-};
-
 const App: React.FC = () => {
-    const data = useLoaderData();
-
-    if (!data.isLoggedIn) {
-        return <GitHubLogin />;
-    }
-
     return <Outlet />;
 };

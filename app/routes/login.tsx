@@ -1,6 +1,6 @@
 import { Form } from "remix";
 
-export const GitHubLogin: React.FC = () => {
+export default function Login() {
     return (
         <div className="flex justify-center items-center h-screen bg-gray-100">
             <div className="flex flex-col justify-center items-center w-3/12 bg-white p-12">
@@ -19,4 +19,4 @@ export const GitHubLogin: React.FC = () => {
             </div>
         </div>
     );
-};
+}

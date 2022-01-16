@@ -1,4 +1,4 @@
-import { LoaderFunction, redirect } from "remix";
+import { LoaderFunction, Outlet, redirect } from "remix";
 import { authenticator } from "~/services/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -9,5 +9,5 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Index() {
-    return <h1>Page not found</h1>;
+    return <Outlet />;
 }

@@ -10,10 +10,11 @@ generator client {
 }
 
 model User {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
   name     String
-  email    String @unique
-  apiToken String @default(uuid())
+  email    String  @unique
+  apiToken String  @default(uuid())
+  active   Boolean @default(false)
 }
 
 model Blog {

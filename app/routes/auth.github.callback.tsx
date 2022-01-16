@@ -1,9 +1,9 @@
-import { LoaderFunction } from "remix";
+import type { LoaderFunction } from "remix";
 import { authenticator } from "~/services/auth.server";
 
-export const loader: LoaderFunction = ({ request }) => {
+export const loader: LoaderFunction = async ({ request }) => {
     return authenticator.authenticate("github", request, {
         successRedirect: "/",
-        failureRedirect: "/",
+        failureRedirect: "/login",
     });
 };
