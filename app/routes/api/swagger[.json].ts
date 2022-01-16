@@ -74,6 +74,15 @@ const spec: SwaggerSpec = {
                         required: true,
                         type: "string",
                     },
+                    {
+                        name: "includePosts",
+                        in: "query",
+                        description: "Include posts",
+                        required: false,
+                        schema: {
+                            type: "boolean",
+                        },
+                    },
                 ],
                 responses: {
                     default: {
