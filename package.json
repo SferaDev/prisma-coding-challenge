@@ -20,11 +20,7 @@
         "docker:test:up": "docker-compose --env-file=.env.test up -d",
         "docker:test:down": "docker-compose --env-file=.env.test down",
         "db:generate": "dotenv -v PRISMA_CLIENT_ENGINE_TYPE='dataproxy' prisma generate",
-        "db:seed": "node --require esbuild-register prisma/seed.ts",
         "db:push": "dotenv -e .env.migrations -- prisma db push"
-    },
-    "prisma": {
-        "seed": "yarn db:seed"
     },
     "dependencies": {
         "@prisma/client": "3.8.1",

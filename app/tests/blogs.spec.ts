@@ -6,7 +6,19 @@ import { loader as loaderBlogPosts } from "../routes/api/blogs.$blog.posts";
 import { action as actionBlogPost } from "../routes/api/blogs.$blog.posts.$post";
 import { callEndpoint } from "./testUtils";
 
+const apiToken = "161a8803-c0d8-4164-a70d-990e33bb550a";
+
 describe("Integration tests for Blogs", () => {
+    beforeAll(async () => {
+        await db.user.create({
+            data: { email: "test@local", name: "Test user", apiToken, active: true },
+        });
+    });
+
+    afterAll(async () => {
+        await db.user.delete({ where: { email: "test@local" } });
+    });
+
     it("Should create a new blog without posts", async () => {
         const blog = {
             name: "Test Blog",
@@ -19,6 +31,7 @@ describe("Integration tests for Blogs", () => {
             method: "POST",
             route: "blogs",
             body: [blog],
+            apiToken,
         });
         expect(createBlogResponse).toHaveLength(1);
         expect(createBlogResponse[0]).toHaveProperty("slug", blog.slug);
@@ -29,6 +42,7 @@ describe("Integration tests for Blogs", () => {
             method: "GET",
             route: `blogs/${blog.slug}`,
             params: { blog: blog.slug },
+            apiToken,
         });
         expect(getBlogResponse).toHaveProperty("slug", blog.slug);
 
@@ -42,6 +56,7 @@ describe("Integration tests for Blogs", () => {
             method: "DELETE",
             route: `blogs/${blog.slug}`,
             params: { blog: blog.slug },
+            apiToken,
         });
 
         // Validate the blog was removed from the database
@@ -73,6 +88,7 @@ describe("Integration tests for Blogs", () => {
             method: "POST",
             route: "blogs",
             body: [blog],
+            apiToken,
         });
         expect(createBlogResponse).toHaveLength(1);
         expect(createBlogResponse[0]).toHaveProperty("slug", blog.slug);
@@ -83,6 +99,7 @@ describe("Integration tests for Blogs", () => {
             method: "GET",
             route: `blogs/${blog.slug}`,
             params: { blog: blog.slug },
+            apiToken,
         });
         expect(getBlogResponse).toHaveProperty("slug", blog.slug);
 
@@ -92,6 +109,7 @@ describe("Integration tests for Blogs", () => {
             method: "GET",
             route: `blogs/${blog.slug}/posts`,
             params: { blog: blog.slug },
+            apiToken,
         });
         expect(getBlogPostsResponse).toHaveLength(2);
 
@@ -101,6 +119,7 @@ describe("Integration tests for Blogs", () => {
             method: "DELETE",
             route: `blogs/${blog.slug}/posts/${blog.posts[0].slug}`,
             params: { blog: blog.slug, post: blog.posts[0].slug },
+            apiToken,
         });
 
         // Ensure one of the blog posts has been deleted
@@ -109,6 +128,7 @@ describe("Integration tests for Blogs", () => {
             method: "GET",
             route: `blogs/${blog.slug}/posts`,
             params: { blog: blog.slug },
+            apiToken,
         });
         expect(getBlogPostsAfterDeleteResponse).toHaveLength(1);
         expect(getBlogPostsAfterDeleteResponse[0]).toHaveProperty("slug", blog.posts[1].slug);
@@ -123,6 +143,7 @@ describe("Integration tests for Blogs", () => {
             method: "DELETE",
             route: `blogs/${blog.slug}`,
             params: { blog: blog.slug },
+            apiToken,
         });
 
         // Validate the blog was removed from the database
