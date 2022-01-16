@@ -28,7 +28,7 @@ model Blog {
 model Post {
   slug      String
   title     String?
-  content   String
+  content   String   @db.LongText
   viewCount Int      @default(0)
   blogSlug  String
   blog      Blog     @relation(fields: [blogSlug], references: [slug])
