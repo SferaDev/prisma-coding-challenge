@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { db } from "~/utils/db.server";
+import { db } from "~/services/db.server";
 import { Unknown } from "~/utils/types";
 
 export const UserModel = z.object({

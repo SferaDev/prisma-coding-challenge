@@ -8,7 +8,7 @@
         "build:css": "tailwindcss -o ./app/tailwind.css",
         "dev": "concurrently \"remix dev\" \"tsc --watch\" \"yarn dev:css\"",
         "dev:css": "tailwindcss -o ./app/tailwind.css --watch",
-        "postinstall": "remix setup node && prisma generate",
+        "postinstall": "remix setup node && yarn db:generate",
         "start": "remix-serve build",
         "prettify": "prettier --write '**/*.{js,ts,tsx,json,md,yml}'",
         "lint": "eslint app --ext .js,.jsx,.ts,.tsx",
@@ -19,9 +19,9 @@
         "docker:down": "docker-compose down",
         "docker:test:up": "docker-compose --env-file=.env.test up -d",
         "docker:test:down": "docker-compose --env-file=.env.test down",
+        "db:generate": "dotenv -v PRISMA_CLIENT_ENGINE_TYPE='dataproxy' prisma generate",
         "db:seed": "node --require esbuild-register prisma/seed.ts",
-        "db:clear": "prisma migrate reset",
-        "db:push": "prisma db push"
+        "db:push": "dotenv -e .env.migrate -- prisma db push"
     },
     "prisma": {
         "seed": "yarn db:seed"

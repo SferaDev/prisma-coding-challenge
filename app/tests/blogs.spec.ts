@@ -1,4 +1,4 @@
-import { db } from "~/utils/db.server";
+import { db } from "~/services/db.server";
 import { randomUid } from "~/utils/uids";
 import { action as actionBlogs } from "../routes/api/blogs";
 import { action as actionBlog, loader as loaderBlog } from "../routes/api/blogs.$blog";

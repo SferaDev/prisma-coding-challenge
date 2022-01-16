@@ -3,7 +3,7 @@ import { uniq } from "~/utils/arrays";
 import { validate } from "~/utils/errors.server";
 import { promiseMap } from "~/utils/promises";
 import { Unknown } from "~/utils/types";
-import { db } from "../utils/db.server";
+import { db } from "../services/db.server";
 import { PostModel } from "./Post";
 
 export const BlogModel = z.object({
