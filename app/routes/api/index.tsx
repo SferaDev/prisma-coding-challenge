@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { LoaderFunction, useLoaderData } from "remix";
+import { json, LoaderFunction, useLoaderData } from "remix";
 import SwaggerUI from "swagger-ui";
 import swaggerStyles from "swagger-ui/dist/swagger-ui.css";
 import { authenticator } from "~/services/auth.server";
@@ -8,13 +8,17 @@ export const links = () => {
     return [{ rel: "stylesheet", href: swaggerStyles }];
 };
 
+interface LoaderData {
+    apiToken?: string;
+}
+
 export const loader: LoaderFunction = async ({ request }) => {
     const user = await authenticator.isAuthenticated(request);
-    return { apiKey: user?.apiToken };
+    return json<LoaderData>({ apiToken: user?.apiToken });
 };
 
 export default function Index() {
-    const data = useLoaderData();
+    const { apiToken } = useLoaderData<LoaderData>();
     const swaggerRef = useRef(null);
 
     useEffect(() => {
@@ -22,10 +26,15 @@ export default function Index() {
             domNode: swaggerRef.current,
             url: "/api/swagger.json",
             onComplete: () => {
-                if (data.apiKey) ui.preauthorizeApiKey("headerKey", data.apiKey);
+                if (apiToken) ui.preauthorizeApiKey("headerKey", apiToken);
             },
         });
     }, []);
 
-    return <div ref={swaggerRef} />;
+    return (
+        <>
+            {apiToken ? <p>API Token: {apiToken}</p> : null}
+            <div className="w-full" ref={swaggerRef} />
+        </>
+    );
 }

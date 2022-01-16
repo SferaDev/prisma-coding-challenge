@@ -1,13 +1,24 @@
-import { LoaderFunction, Outlet, redirect } from "remix";
-import { authenticator } from "~/services/auth.server";
+import { json, LoaderFunction, useLoaderData } from "remix";
+import { ItemList } from "~/components/item-list/ItemList";
+import { Blog, BlogActions } from "~/models/Blog";
 
-export const loader: LoaderFunction = async ({ request }) => {
-    const user = await authenticator.isAuthenticated(request);
-    if (!user) return redirect("/auth/login");
+interface LoaderData {
+    blogs: Blog[];
+}
 
-    return {};
+export const loader: LoaderFunction = async () => {
+    const blogs = await BlogActions.list({ includePosts: false });
+
+    return json<LoaderData>({ blogs });
 };
 
 export default function Index() {
-    return <Outlet />;
+    const { blogs } = useLoaderData<LoaderData>();
+
+    const items = blogs.map(blog => ({
+        title: blog.name,
+        link: `/${blog.slug}`,
+    }));
+
+    return <ItemList items={items} />;
 }

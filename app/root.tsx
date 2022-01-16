@@ -1,5 +1,19 @@
 import React from "react";
-import { Links, LiveReload, Meta, MetaFunction, Outlet, Scripts, ScrollRestoration } from "remix";
+import {
+    json,
+    Links,
+    LiveReload,
+    LoaderFunction,
+    Meta,
+    MetaFunction,
+    Outlet,
+    Scripts,
+    ScrollRestoration,
+    useLoaderData,
+} from "remix";
+import { Header } from "./components/header/Header";
+import { User } from "./models/User";
+import { authenticator } from "./services/auth.server";
 import styles from "./tailwind.css";
 
 export const meta: MetaFunction = () => {
@@ -15,7 +29,7 @@ export default function Root() {
                 <Meta />
                 <Links />
             </head>
-            <body>
+            <body className="min-h-screen bg-gray-50">
                 <App />
                 <ScrollRestoration />
                 <Scripts />
@@ -29,6 +43,25 @@ export function links() {
     return [{ rel: "stylesheet", href: styles }];
 }
 
+interface LoaderData {
+    user?: User;
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+    const user = (await authenticator.isAuthenticated(request)) ?? undefined;
+
+    return json<LoaderData>({ user });
+};
+
 const App: React.FC = () => {
-    return <Outlet />;
+    const { user } = useLoaderData<LoaderData>();
+
+    return (
+        <>
+            <Header user={user} />
+            <div className="flex flex-col justify-center items-start max-w-6xl border-gray-200 mx-auto pb-16">
+                <Outlet />
+            </div>
+        </>
+    );
 };

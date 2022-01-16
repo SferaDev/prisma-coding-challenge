@@ -8,7 +8,7 @@ node_modules
 /api/_build
 
 .env
-.env.migrate
+.env.migrations
 /prisma/dev.db
 /app/tailwind.css
 
