@@ -4,12 +4,21 @@ import { validate } from "~/utils/errors.server";
 import { promiseMap } from "~/utils/promises";
 import { Unknown } from "~/utils/types";
 import { db } from "../services/db.server";
-import { PostModel } from "./Post";
+import { PostActions } from "./Post";
 
 export const BlogModel = z.object({
     name: z.string().min(1),
     slug: z.string().min(1),
-    posts: z.array(PostModel).optional(),
+    posts: z
+        .array(
+            z.object({
+                slug: z.string().min(1),
+                title: z.string().nullable().default(null),
+                content: z.string(),
+                viewCount: z.number().optional(),
+            })
+        )
+        .optional(),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });
@@ -36,10 +45,7 @@ export class BlogActions {
             validate(uniq(posts.map(({ slug }) => slug)).length === posts.length, "Duplicate post slugs", 409);
 
             await db.blog.create({ data: { name, slug: blogSlug } });
-
-            await promiseMap(posts, async ({ title, slug: postSlug, content }) =>
-                db.post.create({ data: { title, slug: postSlug, content, blog: { connect: { slug: blogSlug } } } })
-            );
+            await PostActions.create(blogSlug, posts);
 
             return this.get(blogSlug, { includePosts: true });
         });

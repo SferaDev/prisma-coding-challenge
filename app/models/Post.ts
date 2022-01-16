@@ -8,7 +8,7 @@ import { Blog, BlogActions } from "./Blog";
 
 export const PostModel = z.object({
     slug: z.string().min(1),
-    title: z.string().nullable(),
+    title: z.string().nullable().default(null),
     content: z.string(),
     viewCount: z.number().optional(),
     createdAt: z.date().optional(),
