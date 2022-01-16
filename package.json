@@ -17,8 +17,8 @@
         "posttest": "dotenv -e .env.test -- prisma migrate reset --force",
         "docker:up": "docker-compose up -d",
         "docker:down": "docker-compose down",
-        "docker:test:up": "docker-compose --env-file=.env.test up -d",
-        "docker:test:down": "docker-compose --env-file=.env.test down",
+        "docker:test:up": "docker-compose --env-file=.env.test -p prisma-coding-challenge-test up -d",
+        "docker:test:down": "docker-compose --env-file=.env.test -p prisma-coding-challenge-test down",
         "db:generate": "dotenv -v PRISMA_CLIENT_ENGINE_TYPE='dataproxy' prisma generate",
         "db:push": "dotenv -e .env.migrations -- prisma db push"
     },
